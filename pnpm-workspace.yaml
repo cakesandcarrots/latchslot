@@ -1,0 +1,18 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+
+# pnpm 11+ reads project settings from this file, not .npmrc.
+# Refuse to install with a Node version outside the engines range.
+engineStrict: true
+
+# pnpm 12 blocks versions younger than 24h as supply-chain protection.
+# @fastify/ajv-compiler@4.0.8 was published on 2026-11-17, so exempt that
+# exact version until it ages out; remove the entry after 2026-11-18.
+minimumReleaseAgeExclude:
+  - "@fastify/ajv-compiler@4.0.8"
+
+# Dependency lifecycle scripts are blocked unless approved.
+# esbuild's postinstall installs its platform binary.
+allowBuilds:
+  esbuild: true

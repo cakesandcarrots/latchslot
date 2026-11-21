@@ -1,0 +1,42 @@
+name: latchslot
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: latchslot
+      POSTGRES_PASSWORD: latchslot
+      POSTGRES_DB: latchslot
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U latchslot -d latchslot"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    # Redis is a disposable projection, never the source of truth.
+    # No AOF/RDB persistence on purpose: a wiped Redis is a test case,
+    # and hydration must rebuild it from PostgreSQL.
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    command:
+      - redis-server
+      - --maxmemory
+      - 256mb
+      - --maxmemory-policy
+      - noeviction
+      - --save
+      - ""
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  pgdata:
