@@ -1,7 +1,7 @@
 import { existsSync } from "node:fs";
 import { z } from "zod";
 
-// Node 22 reads a .env file natively; no dotenv dependency needed.
+// Node 26 reads a .env file natively; no dotenv dependency needed.
 // In production the platform injects the variables and no .env exists.
 if (existsSync(".env")) {
   process.loadEnvFile(".env");

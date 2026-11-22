@@ -32,3 +32,6 @@ Thumbs.db
 # local data
 pgdata/
 redisdata/
+
+# code-only repository: no Markdown
+*.md

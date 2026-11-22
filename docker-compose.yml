@@ -2,7 +2,9 @@ name: latchslot
 
 services:
   postgres:
-    image: postgres:16-alpine
+    # Major version bump? Migrate the data first — never point a new major at
+    # an old volume. See docs/operations/postgres-major-upgrade.md.
+    image: postgres:19-alpine
     environment:
       POSTGRES_USER: latchslot
       POSTGRES_PASSWORD: latchslot
@@ -10,7 +12,9 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      # 18+ layout: data lands in /var/lib/postgresql/19, not at the mount root.
+      # Do not mount a PG16 volume here; see docs/operations/postgres-major-upgrade.md.
+      - pgdata:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U latchslot -d latchslot"]
       interval: 5s
@@ -21,7 +25,7 @@ services:
     # Redis is a disposable projection, never the source of truth.
     # No AOF/RDB persistence on purpose: a wiped Redis is a test case,
     # and hydration must rebuild it from PostgreSQL.
-    image: redis:7-alpine
+    image: redis:8.10-alpine
     ports:
       - "6379:6379"
     command:

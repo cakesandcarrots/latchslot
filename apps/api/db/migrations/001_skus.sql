@@ -1,0 +1,2 @@
+create table skus( id uuid primary key default uuidv4() , code text unique not null , name text not null, initial_stock int not null CHECK (initial_stock >= 0) , held_units int default 0 check( held_units>=0) not null , confirmed_units int not null default 0 check( confirmed_units>=0), stock_version bigint not null default 0 check(stock_version>=0 ),constraint skus_capacity_check
+  check (held_units::bigint + confirmed_units::bigint <= initial_stock::bigint));

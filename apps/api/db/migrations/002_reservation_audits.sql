@@ -1,0 +1,3 @@
+create table reservation_audits ( id uuid primary key default uuidv4(), sku_id uuid not null references skus(id), customer_id text not null, quantity int not null check ( quantity>0) , status text not null check(status in ( 'HELD', 'CONFIRMED', 'EXPIRED')),expires_at timestamptz not null, created_at timestamptz not null default now(), updated_at timestamptz not null default now());
+
+create index reservation_audits_due_idx on reservation_audits(expires_at, id) where status = 'HELD';

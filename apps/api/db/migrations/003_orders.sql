@@ -1,0 +1,1 @@
+create table orders(id uuid primary key default uuidv4(), reservation_id uuid unique not null references reservation_audits(id), confirmed_at timestamptz not null default now() );
